@@ -66,22 +66,20 @@ bookingSchema.index({ eventId: 1 });
  * - Ensure email is valid and non-empty after trimming.
  * - Ensure the referenced Event exists before creating the booking.
  */
-bookingSchema.pre<BookingDocument>('save', async function (next) {
-  const booking = this;
+bookingSchema.pre<BookingDocument>('save', async function () {
+  const booking = this as BookingDocument;
 
   const normalizedEmail = booking.email.trim();
   if (normalizedEmail.length === 0 || !isValidEmail(normalizedEmail)) {
-    return next(new Error('A valid, non-empty email is required.'));
+    throw new Error('A valid, non-empty email is required.');
   }
   booking.email = normalizedEmail;
 
   // Ensure the event exists before saving the booking.
   const eventExists = await Event.exists({ _id: booking.eventId });
   if (!eventExists) {
-    return next(new Error('Referenced event does not exist.'));
+    throw new Error('Referenced event does not exist.');
   }
-
-  next();
 });
 
 /**

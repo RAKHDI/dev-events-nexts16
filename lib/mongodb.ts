@@ -73,7 +73,8 @@ export async function connectToDatabase(): Promise<Mongoose> {
 
   // If a connection is already in progress, reuse the same promise.
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
+    // MONGODB_URI is guaranteed to be defined at this point due to the check above.
+    cached.promise = mongoose.connect(MONGODB_URI!, {
       // Disable mongoose's internal buffering; rely on MongoDB driver instead.
       bufferCommands: false,
       // You can add other options here (e.g. autoIndex, maxPoolSize) if needed.

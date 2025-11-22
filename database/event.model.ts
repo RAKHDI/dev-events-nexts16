@@ -168,7 +168,8 @@ function assertRequiredNonEmptyStrings(event: EventDocument): void {
     if (typeof value !== 'string' || value.trim().length === 0) {
       throw new Error(`Field "${field}" is required and must be a non-empty string.`);
     }
-    event[field] = value.trim();
+    // TypeScript cannot infer that we're only touching string fields here, so cast.
+    (event as any)[field] = value.trim();
   }
 }
 
@@ -212,8 +213,8 @@ function normalizeDateAndTime(event: EventDocument): void {
  * - Validate and normalize date/time formats.
  * - Enforce non-empty required fields.
  */
-eventSchema.pre<EventDocument>('save', function (next) {
-  const event = this;
+eventSchema.pre<EventDocument>('save', function () {
+  const event = this as EventDocument;
 
   assertRequiredNonEmptyStrings(event);
   normalizeDateAndTime(event);
@@ -221,8 +222,6 @@ eventSchema.pre<EventDocument>('save', function (next) {
   if (event.isModified('title') || !event.slug) {
     event.slug = slugifyTitle(event.title);
   }
-
-  next();
 });
 
 /**
