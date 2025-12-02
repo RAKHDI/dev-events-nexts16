@@ -1,9 +1,27 @@
 import React from 'react'
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
-import {events} from "@/lib/constants";
+import {cacheLife} from "next/cache";
 
-const Page = () => {
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+interface IEvent {
+    _id: string;
+    title: string;
+    slug: string;
+    image: string;
+    location: string;
+    date: string;
+    time: string;
+}
+
+const Page = async () => {
+    'use cache';
+    cacheLife('hours')
+    const response = await fetch(`${BASE_URL}/api/events`, { cache: 'no-store' });
+    const { events }: { events: IEvent[] } = await response.json();
+
+
     return (
         <section>
             <h1 className="text-center">The Hub for Every Dev <br/> Event You Can't Miss</h1>
@@ -14,9 +32,9 @@ const Page = () => {
                 <h3>Featured Events</h3>
 
                 <ul className="events">
-                    {events.map((event) => (
-                        <li key={event.title}>
-                            <EventCard { ...event} />
+                    {events && events.length > 0 && events.map((event) => (
+                        <li key={event._id} className="list-none">
+                            <EventCard {...event} />
                         </li>
                     ))}
                 </ul>
