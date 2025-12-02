@@ -13,7 +13,7 @@ describe('Event model', () => {
     const uri = mongoServer.getUri();
 
     await mongoose.connect(uri, {
-      dbName: 'test-event',
+      dbName: 'test-event.actions.ts',
     });
   });
 

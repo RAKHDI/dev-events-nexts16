@@ -40,7 +40,7 @@ const bookingSchema = new Schema<Booking>(
       type: Schema.Types.ObjectId,
       ref: 'Event',
       required: true,
-      index: true, // field-level index for faster event lookups
+      index: true, // field-level index for faster event.actions.ts lookups
     },
     email: {
       type: String,
@@ -75,10 +75,10 @@ bookingSchema.pre<BookingDocument>('save', async function () {
   }
   booking.email = normalizedEmail;
 
-  // Ensure the event exists before saving the booking.
+  // Ensure the event.actions.ts exists before saving the booking.
   const eventExists = await Event.exists({ _id: booking.eventId });
   if (!eventExists) {
-    throw new Error('Referenced event does not exist.');
+    throw new Error('Referenced event.actions.ts does not exist.');
   }
 });
 

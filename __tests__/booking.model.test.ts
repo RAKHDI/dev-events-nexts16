@@ -31,8 +31,8 @@ describe('Booking model', () => {
   function buildValidEventOverrides(overrides: Partial<Omit<Parameters<typeof Event.create>[0], 'slug'>> = {}) {
     const base = {
       title: 'Sample Event',
-      slug: 'sample-event', // will be recomputed by pre-save hook but must satisfy schema
-      description: 'A sample event for testing',
+      slug: 'sample-event.actions.ts', // will be recomputed by pre-save hook but must satisfy schema
+      description: 'A sample event.actions.ts for testing',
       overview: 'Overview',
       image: 'https://example.com/image.png',
       venue: 'Main Hall',
@@ -69,7 +69,7 @@ describe('Booking model', () => {
     await expect(invalidBooking.save()).rejects.toThrow(/Invalid email format|A valid, non-empty email is required/i);
   });
 
-  it('should prevent saving if referenced event does not exist', async () => {
+  it('should prevent saving if referenced event.actions.ts does not exist', async () => {
     const nonExistingEventId = new Types.ObjectId();
 
     const booking = new Booking({
@@ -77,6 +77,6 @@ describe('Booking model', () => {
       email: 'user@example.com',
     });
 
-    await expect(booking.save()).rejects.toThrow('Referenced event does not exist.');
+    await expect(booking.save()).rejects.toThrow('Referenced event.actions.ts does not exist.');
   });
 });

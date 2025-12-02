@@ -11,6 +11,7 @@ import {
  * `createdAt` and `updatedAt` are added by Mongoose via `timestamps: true`.
  */
 export interface Event {
+  _id: string;
   title: string;
   slug: string;
   description: string;
@@ -62,6 +63,9 @@ const eventSchema = new Schema<Event>(
       required: true,
       unique: true,
       trim: true,
+      default: function (this: EventDocument): string {
+        return slugifyTitle(this.title);
+      },
     },
     description: {
       type: String,
@@ -182,7 +186,7 @@ function normalizeDateAndTime(event: EventDocument): void {
   // Normalize date
   const parsedDate = new Date(event.date);
   if (Number.isNaN(parsedDate.getTime())) {
-    throw new Error('Invalid event date. Provide a valid date string.');
+    throw new Error('Invalid event.actions.ts date. Provide a valid date string.');
   }
   event.date = parsedDate.toISOString().split('T')[0];
 
