@@ -1,7 +1,9 @@
 // lib/constants.ts
 
+import {Key} from "react";
+
 export type EventItem = {
-    _id: Key | null | undefined;
+    //_id: Key | null | undefined;
     image: string;
     title: string;
     description: string;
