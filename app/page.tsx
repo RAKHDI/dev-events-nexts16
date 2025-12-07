@@ -1,17 +1,8 @@
-import React from 'react'
+import React from 'react';
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
-import {cacheLife} from "next/cache";
 
-const RAW_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
-const BASE_URL = RAW_BASE_URL?.startsWith("http")
-    ? RAW_BASE_URL
-    : `https://${RAW_BASE_URL}`;
-
-const response = await fetch(`${BASE_URL}/api/events`, {
-    cache: "no-store",
-});
+export const dynamic = 'force-dynamic';
 
 interface IEvent {
     _id: string;
@@ -24,30 +15,56 @@ interface IEvent {
 }
 
 const Page = async () => {
-    'use cache';
-    cacheLife('hours')
-    const response = await fetch(`${BASE_URL}/api/events`, { cache: 'no-store' });
-    const { events }: { events: IEvent[] } = await response.json();
+    const RAW_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+    const BASE_URL = RAW_BASE_URL?.startsWith("http")
+        ? RAW_BASE_URL
+        : RAW_BASE_URL
+            ? `https://${RAW_BASE_URL}`
+            : "http://localhost:3000";
+
+    let events: IEvent[] = [];
+
+    try {
+        const response = await fetch(`${BASE_URL}/api/events`, {
+            cache: 'no-store',
+        });
+
+        const data = await response.json();
+        events = data.events || [];
+    } catch (error) {
+        console.error("Failed to fetch events:", error);
+    }
 
     return (
         <section>
-            <h1 className="text-center">The Hub for Every Dev <br/> Event You Can't Miss</h1>
-            <p className="text-center mt-5">Hackathons, Meetups, and Conferences, All in One Place</p>
+            <h1 className="text-center">
+                The Hub for Every Dev <br /> Event You Can't Miss
+            </h1>
+
+            <p className="text-center mt-5">
+                Hackathons, Meetups, and Conferences, All in One Place
+            </p>
+
             <ExploreBtn />
 
             <div className="mt-20 space-y-7">
                 <h3>Featured Events</h3>
 
                 <ul className="events">
-                    {events && events.length > 0 && events.map((event) => (
-                        <li key={event._id} className="list-none">
-                            <EventCard {...event} />
-                        </li>
-                    ))}
+                    {events.length > 0 ? (
+                        events.map((event) => (
+                            <li key={event._id} className="list-none">
+                                <EventCard {...event} />
+                            </li>
+                        ))
+                    ) : (
+                        <p className="text-center mt-10">No events found.</p>
+                    )}
                 </ul>
             </div>
         </section>
-    )
-}
+    );
+};
+
 export default Page;
