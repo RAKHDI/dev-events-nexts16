@@ -1,6 +1,7 @@
 // lib/constants.ts
 
 export type EventItem = {
+    _id: Key | null | undefined;
     image: string;
     title: string;
     description: string;
