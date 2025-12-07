@@ -3,7 +3,15 @@ import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
 import {cacheLife} from "next/cache";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const RAW_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+const BASE_URL = RAW_BASE_URL?.startsWith("http")
+    ? RAW_BASE_URL
+    : `https://${RAW_BASE_URL}`;
+
+const response = await fetch(`${BASE_URL}/api/events`, {
+    cache: "no-store",
+});
 
 interface IEvent {
     _id: string;
