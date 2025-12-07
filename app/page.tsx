@@ -1,6 +1,7 @@
 import React from 'react';
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
+import { getEvents } from "@/lib/actions/getEvents";
 
 interface IEvent {
     _id: string;
@@ -13,26 +14,7 @@ interface IEvent {
 }
 
 const Page = async () => {
-    const RAW_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
-    const BASE_URL = RAW_BASE_URL?.startsWith("http")
-        ? RAW_BASE_URL
-        : RAW_BASE_URL
-            ? `https://${RAW_BASE_URL}`
-            : "http://localhost:3000";
-
-    let events: IEvent[] = [];
-
-    try {
-        const response = await fetch(`${BASE_URL}/api/events`, {
-            cache: 'no-store',
-        });
-
-        const data = await response.json();
-        events = data.events || [];
-    } catch (error) {
-        console.error("Failed to fetch events:", error);
-    }
+    const events: IEvent[] = await getEvents();
 
     return (
         <section>
