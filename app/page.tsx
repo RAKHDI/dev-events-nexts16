@@ -2,8 +2,6 @@ import React from 'react';
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
 
-export const dynamic = 'force-dynamic';
-
 interface IEvent {
     _id: string;
     title: string;
